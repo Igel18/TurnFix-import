@@ -1,0 +1,134 @@
+﻿<UserControl x:Class="TurnFixImport.views.DefaultView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TurnFixImport.views"
+             xmlns:vm="clr-namespace:TurnFixImport.viewmodels"
+             xmlns:converter="clr-namespace:TurnFixImport.framework"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.DataContext>
+        <vm:DefaultVM />
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <converter:BoolToVisibilityConverter x:Key="BoolToVisible"/>
+        <converter:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisible"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> 
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Margin="20">
+            <TextBlock Margin="0,0,15,0" Text="Datenbank Typ:"></TextBlock>
+            <ComboBox SelectedIndex="{Binding DatabaseType}" Width="100">
+                <ComboBoxItem>PostGreSQL</ComboBoxItem>
+                <ComboBoxItem>SQLite</ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
+
+        <Grid Grid.Column="0" Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Visibility="{Binding Sqlite, Converter={StaticResource BoolToVisible}}" Orientation="Horizontal" Height="Auto" Margin="20">
+                    <TextBlock Margin="0,0,15,0" Text="Pfad zur SQLite-Datei"></TextBlock>
+                    <TextBox Text="{Binding DatabasePathSqlite}" Width="280" Margin="0,0,5,0"></TextBox>
+                    <Button Command="{Binding Open}" CommandParameter="sqlite" Content="Öffnen"></Button>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Visibility="{Binding Sqlite, Converter={StaticResource InverseBoolToVisible}}" Margin="20">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <RadioButton GroupName="postgres" IsChecked="{Binding AutomaticSelected}" Content="Pfad zur TurnFixInstallation" Margin="0,0,15,0" ></RadioButton>
+                    <TextBox Text="{Binding PostgresInstallation}" Width="280" Margin="0,0,5,0" IsEnabled="{Binding AutomaticSelected}"></TextBox>
+                    <Button Content="Öffnen" Command="{Binding Open}" CommandParameter="postgresinstallation" IsEnabled="{Binding AutomaticSelected}"></Button>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton GroupName="postgres" IsChecked="{Binding ManualSelected}" Content="Manuelle Eingabe" Margin="0,0,15,0" ></RadioButton>
+                    <Grid Margin="20" IsEnabled="{Binding ManualSelected}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Text="Benutzername:" Grid.Row="0" Grid.Column="0"></TextBlock>
+                        <TextBox Grid.Row="0" Text="{Binding UserName}"  Grid.Column="1" Width="150" Margin="10,0,0,10"></TextBox>
+                        
+                        <TextBlock Text="Passwort:" Grid.Row="1" Grid.Column="0"></TextBlock>
+                        <TextBox Grid.Row="1" Text="{Binding Password}" Grid.Column="1" Width="150" Margin="10,0,0,10"></TextBox>
+                        
+                        <TextBlock Text="Server:" Grid.Row="2" Grid.Column="0"></TextBlock>
+                        <TextBox Grid.Row="2" Text="{Binding Server}" Grid.Column="1" Width="150" Margin="10,0,0,10"></TextBox>
+
+                        <TextBlock Text="Datenbank:" Grid.Row="3" Grid.Column="0"></TextBlock>
+                        <TextBox Grid.Row="3" Text="{Binding Database}" Grid.Column="1" Width="150" Margin="10,0,0,0"></TextBox>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Column="0" Grid.Row="3" Margin="20,0,20,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Import-Datei:" Margin="0,0,10,0" Grid.Column="0" Grid.Row="0"/>
+
+            <StackPanel Orientation="Horizontal"  Margin="0,0,0,0" Grid.Column="1" Grid.Row="0">
+                <TextBox Text="{Binding ImportFile}" Width="250" Margin="0,0,5,0"></TextBox>
+                <Button Content="Öffnen" Command="{Binding Open}" CommandParameter="importfile"></Button>
+            </StackPanel>
+
+            <TextBlock Text="Veranstaltungstitel:" Margin="0,10,10,0" Grid.Column="0" Grid.Row="1"/>
+            <TextBox Text="{Binding Title}" Width="250" Margin="0,10,0,0" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" />
+        </Grid>
+        
+        <!--<StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="3" Margin="20,0,0,0">
+            <TextBlock Text="Import-Datei:" Margin="0,0,10,0"/>
+            <TextBox Text="{Binding ImportFile}" Width="250" Margin="0,0,5,0"></TextBox>
+            <Button Content="Öffnen" Command="{Binding Open}" CommandParameter="importfile"></Button>
+        </StackPanel>-->
+
+        <Grid Grid.Column="0" Grid.Row="4" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+                <Button Command="{Binding Import}" Content="Importieren" Margin="0,0,10,0"></Button>
+                <Button Command="{Binding Exit}" Content="Schließen"></Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>
